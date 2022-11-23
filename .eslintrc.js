@@ -15,7 +15,7 @@ module.exports = {
     'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'vue/multi-word-component-names': ['error', {
-      'ignores': ['Box', 'Cronometro', 'Formulario', 'Tarefa', 'Temporizador']
+      'ignores': ['Box', 'Cronometro', 'Formulario', 'Tarefa', 'Temporizador', 'Projeto', 'Projetos', 'Lista', 'Notificacoes']
     }]
   }
 }
