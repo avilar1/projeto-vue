@@ -29,7 +29,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, ref } from 'vue';
 import Temporizador from './Temporizador.vue';
 import { useStore } from 'vuex';
 
@@ -44,38 +44,57 @@ export default defineComponent({
     components: {
         Temporizador
     },
-    data() {
-        return {
-            descricao: '',
-            idProjeto: ''
-        }
-    },
+    // data() {
+    //     return {
+    //         descricao: '',
+    //         idProjeto: ''
+    //     }
+    // },
     methods: {
-        finalizarTarefa(tempoEmSegundos: number) : void {
-            const projeto = this.projetos.find((p) => p.id == this.idProjeto);
-            if(!projeto) {
-                this.notificar(TipoNotificacao.FALHA, 'Ops!', 'Selecione um projeto antes de finalizar a tarefa!') //via mixins
-                // this.store.commit(NOTIFICAR, {
-                //     titulo: 'Ops!',
-                //     texto: "Selecione um projeto antes de finalizar a tarefa!",
-                //     tipo: TipoNotificacao.FALHA,
-                // });
-                return;
-            }
-            this.$emit("aoSalvarTarefa", {
-                duracaoEmSegundos: tempoEmSegundos,
-                descricao: this.descricao,
-                //projeto: this.projetos,
-                projeto: this.projetos.find(proj => proj.id == this.idProjeto)
-            });
-            this.descricao = '';
-        }
+        // finalizarTarefa(tempoEmSegundos: number) : void {
+        //     const projeto = this.projetos.find((p) => p.id == this.idProjeto);
+        //     if(!projeto) {
+        //         this.notificar(TipoNotificacao.FALHA, 'Ops!', 'Selecione um projeto antes de finalizar a tarefa!') //via mixins
+        //         // this.store.commit(NOTIFICAR, {
+        //         //     titulo: 'Ops!',
+        //         //     texto: "Selecione um projeto antes de finalizar a tarefa!",
+        //         //     tipo: TipoNotificacao.FALHA,
+        //         // });
+        //         return;
+        //     }
+        //     this.$emit("aoSalvarTarefa", {
+        //         duracaoEmSegundos: tempoEmSegundos,
+        //         descricao: this.descricao,
+        //         //projeto: this.projetos,
+        //         projeto: this.projetos.find(proj => proj.id == this.idProjeto)
+        //     });
+        //     this.descricao = '';
+        // }
     },
-    setup() {
+    setup(props, {emit}) {
         const store = useStore(key);
+
+        const descricao = ref('');
+        const idProjeto = ref('');
+
+        const projetos = computed(() => store.state.projeto.projetos)
+
+        const finalizarTarefa = (tempoEmSegundos: number) : void =>{
+            
+            emit("aoSalvarTarefa", {
+                duracaoEmSegundos: tempoEmSegundos,
+                descricao: descricao.value,
+                projeto: projetos.value.find(proj => proj.id == idProjeto.value)
+            });
+            descricao.value = '';
+        }
+
         const { notificar } = Notificador();
         return {
-            projetos: computed(() => store.state.projetos),
+            descricao, //mesma coisa que descricao = descricao
+            idProjeto,
+            projetos,
+            finalizarTarefa,
             notificar
         }
     }

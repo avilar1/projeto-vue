@@ -1,12 +1,20 @@
-import IProjeto from "@/interfaces/IProjeto";
+//import IProjeto from "@/interfaces/IProjeto";
 import { createStore, Store, useStore as vuexUseStore } from "vuex";
 import { InjectionKey } from 'vue';
-import { ADCIONA_PROJETO, ALTERA_PROJETO, EXCLUIR_PROJETO, NOTIFICAR } from "./tipo-mutacoes";
+import { ADCIONA_PROJETO, ADCIONA_TAREFA, ALTERA_PROJETO, ALTERA_TAREFA, DEFINIR_PROJETOS, DEFINIR_TAREFAS, EXCLUIR_PROJETO, NOTIFICAR } from "./tipo-mutacoes";
 import { INotificacao } from "@/interfaces/INotificacao";
+import { ALTERAR_PROJETO, ALTERAR_TAREFA, CADASTRAR_PROJETO, CADASTRAR_TAREFA, OBTER_PROJETOS, OBTER_TAREFAS, REMOVER_PROJETO } from "./tipo-acoes";
+import http from "@/http";
+import ITarefa from "@/interfaces/ITarefa";
+import { EstadoProjeto, projeto } from "./modulos/projeto";
+import { EstadoTarefa, tarefa } from "./modulos/tarefa";
 
-interface Estado {
-    projetos: IProjeto[],
-    notificacoes: INotificacao[]
+export interface Estado {
+    //projetos: IProjeto[],
+    notificacoes: INotificacao[],
+    tarefas: ITarefa[],
+    projeto: EstadoProjeto
+    tarefa: EstadoTarefa
 }
 
 export const key: InjectionKey<Store<Estado>> = Symbol()
@@ -14,7 +22,16 @@ export const key: InjectionKey<Store<Estado>> = Symbol()
 
 export const store = createStore<Estado>({
     state: {
-        projetos: [
+        tarefas: [],
+        notificacoes: [],
+        projeto: {
+            projetos: []
+        },
+        tarefa: {
+            tarefas: []
+        }
+
+        //projetos: [
             // {
             //     id: new Date().toISOString(),
             //     nome: "TypeScript"
@@ -28,8 +45,8 @@ export const store = createStore<Estado>({
             //     nome: "Vuex"
             // },
 
-        ],
-        notificacoes: [
+        //],
+        //notificacoes: [
 
             //    {
             //     id: 1,
@@ -48,33 +65,27 @@ export const store = createStore<Estado>({
             //     tipo: TipoNotificacao.FALHA
             // },
 
-        ]
+        //]
     },
     mutations: {
-        [ADCIONA_PROJETO](state, nomeDoProjeto: string) {
-            const projeto = {
-                id: new Date().toISOString(),
-                nome: nomeDoProjeto
-            } as IProjeto
-
-            state.projetos.push(projeto)
-
-        },
-        [ALTERA_PROJETO](state, projeto: IProjeto) {
-            const index = state.projetos.findIndex(proj => proj.id == projeto.id)
-            state.projetos[index] = projeto
-        },
-        [EXCLUIR_PROJETO](state, id: string) {
-            state.projetos = state.projetos.filter(proj => proj.id !== id)
-        },
+       //antes as mutations de tarefa e projeto ficavam aqui. Agora estão em seus respectivos arquivos.
+        
         [NOTIFICAR](state, novaNotificacao: INotificacao) {
             novaNotificacao.id = new Date().getTime()
             state.notificacoes.push(novaNotificacao)
 
             setTimeout(() => {
-                state.notificacoes = state.notificacoes.filter(not => not.id != novaNotificacao.id)
+                state.notificacoes = state.notificacoes.filter(notificacao => notificacao.id != novaNotificacao.id)
             }, 3000);
-        }
+        },
+        
+    },
+    actions: {
+        
+    },
+    modules: {
+       projeto,
+       tarefa
     }
 })
 

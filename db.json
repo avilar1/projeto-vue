@@ -1,0 +1,80 @@
+{
+  "projetos": [
+    {
+      "id": 1,
+      "nome": "Alura Tracker Vascaina"
+    },
+    {
+      "id": 3,
+      "nome": "Especial"
+    },
+    {
+      "nome": "Teste",
+      "id": 4
+    },
+    {
+      "id": 5,
+      "nome": "Azuly"
+    },
+    {
+      "id": 6,
+      "nome": "Padrões Altos"
+    }
+  ],
+  "tarefas": [
+    {
+      "id": 1,
+      "duracaoEmSegundos": 120,
+      "descricao": "Configuração Inicial",
+      "projeto": {
+        "id": 1,
+        "nome": "Alura Tracker Vascaina"
+      }
+    },
+    {
+      "duracaoEmSegundos": 4,
+      "descricao": "Vasco",
+      "projeto": {
+        "nome": "aulas",
+        "id": 2
+      },
+      "id": 2
+    },
+    {
+      "duracaoEmSegundos": 6,
+      "descricao": "Alaoi",
+      "projeto": {
+        "nome": "Teste",
+        "id": 4
+      },
+      "id": 3
+    },
+    {
+      "duracaoEmSegundos": 1,
+      "descricao": "Teste refatorado",
+      "projeto": {
+        "id": 1,
+        "nome": "Alura Tracker Vascaina"
+      },
+      "id": 4
+    },
+    {
+      "duracaoEmSegundos": 4,
+      "descricao": "Brasa",
+      "projeto": {
+        "id": 6,
+        "nome": "Padrões Altos"
+      },
+      "id": 5
+    },
+    {
+      "duracaoEmSegundos": 5,
+      "descricao": "alga",
+      "projeto": {
+        "id": 5,
+        "nome": "Azuly"
+      },
+      "id": 6
+    }
+  ]
+}

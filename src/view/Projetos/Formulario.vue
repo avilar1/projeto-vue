@@ -21,11 +21,13 @@
 
 <script lang="ts">
 import { TipoNotificacao } from '@/interfaces/INotificacao';
-import { notificacoesMixin } from '@/mixins/notificar';
+//import { notificacoesMixin } from '@/mixins/notificar';
 import { useStore } from '@/store';
-import { ALTERA_PROJETO, ADCIONA_PROJETO} from '@/store/tipo-mutacoes';
-import { defineComponent } from 'vue';
+//import { ALTERA_PROJETO, ADCIONA_PROJETO } from '@/store/tipo-mutacoes';
+import { defineComponent, ref } from 'vue';
 import Notificador from '@/hooks/notificador';
+import { ALTERAR_PROJETO, CADASTRAR_PROJETO } from '@/store/tipo-acoes';
+import { useRouter } from 'vue-router';
 
 // import IProjeto from '../interfaces/IProjeto';
 export default defineComponent({
@@ -37,51 +39,95 @@ export default defineComponent({
     },
     //mixins: [notificacoesMixin],
 
-    mounted() {
-        if (this.id) {
-            const projeto = this.store.state.projetos.find(proj => proj.id == this.id)
-            this.nomeDoProjeto = projeto?.nome || ''
-        }
-    },
+    // mounted() {
+    //     if (this.id) {
+    //         const projeto = this.store.state.projeto.projetos.find(proj => proj.id == this.id)
+    //         this.nomeDoProjeto = projeto?.nome || ''
+    //     }
+    // },
 
-    data() {
-        return {
-            nomeDoProjeto: '',
-            // projetos: [] as IProjeto[]
-        };
-    },
+    // data() {
+    //     return {
+    //         nomeDoProjeto: '',
+    //         // projetos: [] as IProjeto[]
+    //     };
+    // },
     methods: {
-        salvar() {
+        // salvar() {
 
-            if (this.id) {
-                this.store.commit(ALTERA_PROJETO, {
-                    id: this.id,
-                    nome: this.nomeDoProjeto
-                })
+        //     if (this.id) {
+        //         // this.store.commit(ALTERA_PROJETO, {
+        //         //     id: this.id,
+        //         //     nome: this.nomeDoProjeto
+        //         this.store.dispatch(ALTERAR_PROJETO, {
+        //             id: this.id,
+        //             nome: this.nomeDoProjeto
+        //         }).then(() => this.lidarComSucesso())
 
-            } else {
-                this.store.commit(ADCIONA_PROJETO, this.nomeDoProjeto);
-            }
+        //     } else {
+        //         //this.store.commit(ADCIONA_PROJETO, this.nomeDoProjeto); -> sem o http
+        //         this.store.dispatch(CADASTRAR_PROJETO, this.nomeDoProjeto)
+        //             .then(() => this.lidarComSucesso())
+        //         //{
+        //         // console.log(this.nomeDoProjeto);
+        //         // const projeto: IProjeto = {
+        //         //     nome: this.nomeDoProjeto,
+        //         //     id: new Date().toISOString()
+        //         // }
+        //         // this.projetos.push(projeto);
 
+        //         //}
 
-            // console.log(this.nomeDoProjeto);
-            // const projeto: IProjeto = {
-            //     nome: this.nomeDoProjeto,
-            //     id: new Date().toISOString()
-            // }
-            // this.projetos.push(projeto);
-            this.nomeDoProjeto = '';
-            this.notificar(TipoNotificacao.SUCESSO, 'Projeto salvo com sucesso', 'Tudo certo, camarada, o comunismo agradece.') //via mixins
-            this.$router.push('/projetos');
-        }
-        
+        //     }
+
+        // },
+        // lidarComSucesso() {
+        //     this.nomeDoProjeto = '';
+        //     this.notificar(TipoNotificacao.SUCESSO, 'Projeto salvo com sucesso', 'Tudo certo, camarada, o comunismo agradece.') //via mixins
+        //     this.$router.push('/projetos');
+        // }
+
     },
-    setup() {
+    setup(props) {
+
+        const router = useRouter();
+
         const store = useStore();
         const { notificar } = Notificador();
+
+        const nomeDoProjeto = ref('');
+
+        if (props.id) {
+            const projeto = store.state.projeto.projetos.find(proj => proj.id == props.id)
+            nomeDoProjeto.value = projeto?.nome || ''
+        }
+
+        const lidarComSucesso = () => {
+            nomeDoProjeto.value = '';
+            notificar(TipoNotificacao.SUCESSO, 'Projeto salvo com sucesso', 'Tudo certo, camarada, o comunismo agradece.') //via mixins
+            router.push('/projetos');
+        }
+
+        const salvar = () => {
+
+            if (props.id) {
+                store.dispatch(ALTERAR_PROJETO, {
+                    id: props.id,
+                    nome: nomeDoProjeto.value
+                }).then(() => lidarComSucesso())
+
+            } else {
+                 store.dispatch(CADASTRAR_PROJETO, nomeDoProjeto.value)
+                    .then(() => lidarComSucesso())
+            }
+
+        }
+
         return {
-            store,
-            notificar
+            // store,
+            // notificar,
+            nomeDoProjeto,
+            salvar
         }
     },
 });
